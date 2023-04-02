@@ -3,6 +3,7 @@ const API_KEY = import.meta.env.VITE_APP_API_KEY;
 import "./App.css";
 import CoinInfo from "./components/CoinInfo";
 import SideNav from "./components/SideNav";
+import DetailView from "./routes/DetailView";
 
 function App() {
   const [list, setList] = useState(null);
@@ -27,11 +28,10 @@ function App() {
   useEffect(() => {
     const fetchAllCoinData = async () => {
       const response = await fetch(
-        "https://min-api.cryptocompare.com/data/all/coinlist"
+        `https://min-api.cryptocompare.com/data/all/coinlist?&api_key=${API_KEY}`
       );
 
       const json = await response.json();
-      console.log(json);
       setList(json);
     };
 
@@ -41,34 +41,36 @@ function App() {
   return (
     <div className="whole-page">
       <SideNav />
-      <h1> My Crypto List</h1>
-      <input
-        type="text"
-        pleaceholder="Search..."
-        onChange={(inputString) => searchItem(inputString.target.value)}
-      />
-      <ul>
-        {searchInput.length > 0
-          ? filteredResults.map((coin) =>
-              list.Data[coin].PlatformType === "blockchain" ? (
-                <CoinInfo
-                  image={list.Data[coin].ImageUrl}
-                  name={list.Data[coin].FullName}
-                  symbol={list.Data[coin].Symbol}
-                />
-              ) : null
-            )
-          : list &&
-            Object.entries(list.Data).map(([coin]) =>
-              list.Data[coin].PlatformType === "blockchain" ? (
-                <CoinInfo
-                  image={list.Data[coin].ImageUrl}
-                  name={list.Data[coin].FullName}
-                  symbol={list.Data[coin].Symbol}
-                />
-              ) : null
-            )}
-      </ul>
+      <div className="crypto-content">
+        <h1> My Crypto List</h1>
+        <input
+          type="text"
+          placeholder="Search..."
+          onChange={(inputString) => searchItem(inputString.target.value)}
+        />
+        <ul>
+          {searchInput.length > 0
+            ? filteredResults.map((coin) =>
+                list.Data[coin].PlatformType === "blockchain" ? (
+                  <CoinInfo
+                    image={list.Data[coin].ImageUrl}
+                    name={list.Data[coin].FullName}
+                    symbol={list.Data[coin].Symbol}
+                  />
+                ) : null
+              )
+            : list &&
+              Object.entries(list.Data).map(([coin]) =>
+                list.Data[coin].PlatformType === "blockchain" ? (
+                  <CoinInfo
+                    image={list.Data[coin].ImageUrl}
+                    name={list.Data[coin].FullName}
+                    symbol={list.Data[coin].Symbol}
+                  />
+                ) : null
+              )}
+        </ul>
+      </div>
     </div>
   );
 }
